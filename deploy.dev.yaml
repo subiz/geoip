@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: geoip
+  labels:
+    app: geoip
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  clusterIP: None
+  selector:
+    app: geoip
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: geoip
+  labels:
+    app: geoip
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: geoip
+  template:
+    metadata:
+      labels:
+        app: geoip
+        type: ms
+    spec:
+      containers:
+      - name: geoip
+        image: fiorix/freegeoip
+        ports:
+        - containerPort: 8080
+          name: http
